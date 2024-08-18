@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { type Message, useChat } from 'ai/react'
 import { Bot, MessageSquare } from 'lucide-react'
 import ChatInput from './chat-input'
@@ -22,10 +23,10 @@ export default function ChatWrapper(props: Props) {
     <div className='flex h-screen flex-col bg-background'>
       <header className='bg-brand-emerald px-4 py-4 text-white lg:px-16'>
         <div className='mx-auto flex max-w-screen-2xl items-center justify-between'>
-          <div className='flex items-center gap-2'>
+          <Link href='/' className='flex items-center gap-2'>
             <Bot className='h-6 w-6' />
             <h1 className='text-lg font-medium'>Page Whisper</h1>
-          </div>
+          </Link>
         </div>
       </header>
 
