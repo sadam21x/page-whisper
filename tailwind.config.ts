@@ -19,6 +19,9 @@ const config = {
         inter: ['var(--font-inter)', 'sans-serif'],
       },
       colors: {
+        brand: {
+          emerald: '#0A8537',
+        },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
