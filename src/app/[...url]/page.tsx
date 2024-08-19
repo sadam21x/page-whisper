@@ -16,7 +16,7 @@ export default async function Page(props: Props) {
   const url = reconstructUrl(props.params.url as string[])
   const isAlreadyIndexed = await redis.sismember('indexed-urls', url)
   const sessionCookie = cookies().get('sessionId')?.value
-  const sessionId = `${reconstructUrl}--${sessionCookie}`.replace(/\//g, '')
+  const sessionId = `${url}--${sessionCookie}`.replace(/\//g, '')
 
   if (!isAlreadyIndexed) {
     await ragChat.context.add({
