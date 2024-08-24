@@ -8,7 +8,7 @@ export default function Page() {
     <div className='mx-auto flex min-h-screen max-w-screen-2xl flex-col items-center justify-center'>
       <Bot className='size-16 text-brand-emerald' />
 
-      <h1 className='mt-2 text-center text-2xl font-bold text-brand-emerald'>
+      <h1 className='mt-2 text-center text-2xl font-extrabold text-brand-emerald'>
         Page Whisper
       </h1>
 

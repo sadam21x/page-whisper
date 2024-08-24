@@ -3,6 +3,7 @@ import { redis } from '@/lib/redis'
 import { ragChat } from '@/lib/rag-chat'
 import { reconstructUrl } from '@/lib/utils'
 import ChatWrapper from '@/components/chat-wrapper'
+import InitError from '@/components/init-error'
 
 type Props = {
   params: {
@@ -12,25 +13,52 @@ type Props = {
 
 export const dynamic = 'force-dynamic'
 
-export default async function Page(props: Props) {
+async function initialize(props: Props) {
   const url = reconstructUrl(props.params.url as string[])
-  const isAlreadyIndexed = await redis.sismember('indexed-urls', url)
   const sessionCookie = cookies().get('sessionId')?.value
   const sessionId = `${url}--${sessionCookie}`.replace(/\//g, '')
 
-  if (!isAlreadyIndexed) {
-    await ragChat.context.add({
-      type: 'html',
-      source: url,
+  try {
+    const isAlreadyIndexed = await redis.sismember('indexed-urls', url)
+
+    if (!isAlreadyIndexed) {
+      const addToContext = await ragChat.context.add({
+        type: 'html',
+        source: url,
+      })
+
+      if (!addToContext.success) {
+        throw new Error(addToContext.error)
+      }
+
+      await redis.sadd('indexed-urls', url)
+    }
+
+    const initialMessages = await ragChat.history.getMessages({
+      sessionId,
+      amount: 10,
     })
 
-    await redis.sadd('indexed-urls', url)
+    return {
+      sessionId,
+      initialMessages,
+    }
+  } catch (error: any) {
+    return { error: error.message ?? 'Internal Server Error' }
+  }
+}
+
+export default async function Page(props: Props) {
+  const data = await initialize(props)
+
+  if (data.error) {
+    return <InitError error={data.error} />
   }
 
-  const initialMessages = await ragChat.history.getMessages({
-    sessionId,
-    amount: 10,
-  })
-
-  return <ChatWrapper sessionId={sessionId} initialMessages={initialMessages} />
+  return (
+    <ChatWrapper
+      sessionId={data.sessionId!}
+      initialMessages={data.initialMessages!}
+    />
+  )
 }

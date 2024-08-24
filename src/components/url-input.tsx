@@ -6,9 +6,7 @@ import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default function UrlInput() {
-  const [input, setInput] = useState(
-    'https://en.wikipedia.org/wiki/Lionel_Messi'
-  )
+  const [input, setInput] = useState('https://sadam.dev')
 
   const [isRedirecting, setIsRedirecting] = useState(false)
 
@@ -36,12 +34,7 @@ export default function UrlInput() {
         autoFocus
       />
 
-      <Button
-        size='sm'
-        className='mt-4'
-        onClick={handleSubmit}
-        disabled={isRedirecting}
-      >
+      <Button className='mt-4' onClick={handleSubmit} disabled={isRedirecting}>
         {isRedirecting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
         Let's Go 🚀
       </Button>
